@@ -9,6 +9,7 @@ using Microsoft.SharePoint;
 using Microsoft.SharePoint.WebControls;
 using Microsoft.SharePoint.WebPartPages;
 using WebPart = System.Web.UI.WebControls.WebParts.WebPart;
+using System.Linq;
 
 namespace GoldenGate.GoldenGatePhotoGallery
 {
@@ -49,7 +50,61 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
         private void CreatePhotoGallery()
         {
-            Controls.Add(new LiteralControl("ready to go"));
+            var albumsQuery = new SPQuery()
+                                  {
+                                      Query = QueryResources.AlbumsQueryText,
+                                  };
+
+            var pictureLibrary = SPContext.Current.Web.Lists[PictureLibraryName];
+
+            foreach(var curAlbum in pictureLibrary.GetItems(albumsQuery).Cast<SPListItem>().Select(x => x.Folder))
+            {
+                Controls.Add(new Album()
+                                 {
+                                     AlbumName = curAlbum.Name,
+                                     ThumbNailUrl = "http://sharepointdev/_layouts/images/siteIcon.png",
+                                     Type = Album.AlbumType.Photo,
+                                     ItemsCount = curAlbum.ItemCount //This will include sub-folders in the count, but they shouldn't be there.
+                                 });
+            }
+
+            var picturesQuery = new SPQuery()
+                                    {
+                                        Query = QueryResources.TopLevelPhotosQueryText,
+                                    };
+
+            foreach(SPListItem curPicture in pictureLibrary.GetItems(picturesQuery))
+            {
+                Controls.Add(new LiteralControl(String.Format(
+                @"<div class='photo'>
+                    <img src='{0}' />
+                  </div>", curPicture["ows_EncodedAbsThumbnailUrl"])));
+            }
+        }
+
+        private static class QueryResources
+        {
+            public const string AlbumsQueryText =
+                @"<Where>
+                    <Eq>
+                        <FieldRef Name='ContentType' />
+                        <Value Type='Computed'>Folder</Value>
+                    </Eq>
+                  </Where>
+                  <OrderBy>
+                    <FieldRef Name='Created' Ascending='False' />
+                  </OrderBy>";
+
+            public const string TopLevelPhotosQueryText =
+                @"<Where>
+                    <Eq>
+                        <FieldRef Name='ContentType' />
+                        <Value Type='Computed'>Picture</Value>
+                    </Eq>
+                  </Where>
+                  <OrderBy>
+                    <FieldRef Name='Created' Ascending='False' />
+                  </OrderBy>";
         }
     }
 }

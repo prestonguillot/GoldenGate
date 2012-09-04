@@ -13,7 +13,7 @@ namespace GoldenGate
         public static bool ListExists(this SPWeb curWeb, string listName)
         {
             listName = (listName ?? String.Empty).Trim().ToLower();
-            return curWeb != null && curWeb.Lists.Cast<SPList>().Any(list => list.Title.ToLower().Equals(listName));
+            return curWeb.Lists.Cast<SPList>().Any(list => list.Title.ToLower().Equals(listName));
         }
 
         public static void EmitErrorMessage(this WebPart curPart, string errorMessage)

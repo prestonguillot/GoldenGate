@@ -48,6 +48,7 @@
     <Reference Include="Microsoft.SharePoint" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Album.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GoldenGatePhotoGallery\GoldenGatePhotoGallery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,7 +69,6 @@
       <DependentUpon>Package.package</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Features\Golden Gate Media\Golden Gate Media.Template.xml">
       <DependentUpon>Golden Gate Media.feature</DependentUpon>
