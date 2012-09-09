@@ -142,10 +142,10 @@ namespace GoldenGate.GoldenGatePhotoGallery
         {
             public const string AlbumsQueryText =
                 @"<Where>
-                    <Eq>
-                        <FieldRef Name='ContentType' />
-                        <Value Type='Computed'>Folder</Value>
-                    </Eq>
+                    <BeginsWith>
+                        <FieldRef Name='ContentTypeId' />
+                        <Value Type='ContentTypeId'>0x0120</Value>
+                    </BeginsWith>
                   </Where>
                   <OrderBy>
                     <FieldRef Name='Created' Ascending='False' />
