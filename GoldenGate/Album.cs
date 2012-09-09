@@ -16,7 +16,9 @@ namespace GoldenGate
         public String ThumbNailUrl { get; set; }
         public int ItemsCount { get; set; }
         public AlbumType Type { get; set; }
+// ReSharper disable InconsistentNaming
         private string _cssId;
+// ReSharper restore InconsistentNaming
         public String CssId
         {
             get
