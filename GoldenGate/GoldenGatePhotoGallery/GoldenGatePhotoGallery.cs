@@ -16,8 +16,6 @@ namespace GoldenGate.GoldenGatePhotoGallery
     [ToolboxItemAttribute(false)]
     public class GoldenGatePhotoGallery : WebPart
     {
-        #region Web Part Configuration
-
         [WebBrowsable]
         [Personalizable(PersonalizationScope.Shared)]
         [SPWebCategoryName("Picture Library Configuration")]
@@ -25,14 +23,15 @@ namespace GoldenGate.GoldenGatePhotoGallery
         [XmlElement("PictureLibraryName")]
         public string PictureLibraryName { get; set; }
 
-        #endregion
-
         private string SelectedAlbumName
         {
             get { return Page.Request.QueryString["album"]; }
         }
 
-        #region Web Part Life Cycle
+        private bool ConfigIsValid
+        {
+            get { return SPContext.Current.Web.ListExists(PictureLibraryName); }
+        }
 
         protected override void CreateChildControls()
         {
@@ -44,13 +43,6 @@ namespace GoldenGate.GoldenGatePhotoGallery
             {
                 this.EmitErrorMessage("Web Part Configuration Is Invalid");
             }
-        }
-
-        #endregion
-
-        private bool ConfigIsValid
-        {
-            get { return SPContext.Current.Web.ListExists(PictureLibraryName); }
         }
 
         private void CreatePhotoGallery()
