@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+// ReSharper disable RedundantUsingDirective
 using System.Linq;
-using System.Text;
+// ReSharper restore RedundantUsingDirective
 using System.Web.UI.WebControls;
 
 namespace GoldenGate

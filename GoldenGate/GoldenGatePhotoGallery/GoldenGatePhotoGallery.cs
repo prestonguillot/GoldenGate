@@ -1,15 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.ComponentModel;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Serialization;
 using Microsoft.SharePoint;
-using Microsoft.SharePoint.WebControls;
 using Microsoft.SharePoint.WebPartPages;
 using WebPart = System.Web.UI.WebControls.WebParts.WebPart;
-using System.Linq;
 
 namespace GoldenGate.GoldenGatePhotoGallery
 {
@@ -52,18 +48,18 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
             if (String.IsNullOrEmpty(SelectedAlbumName) || !TryGetSelectedAlbum(pictureLibrary, out selectedAlbum))
             {
-                this.AddAlbumControls(pictureLibrary);
-                this.AddAlbumItemControls(pictureLibrary);
+                AddAlbumControls(pictureLibrary);
+                AddAlbumItemControls(pictureLibrary);
             }
             else
             {
-                this.AddAlbumItemControls(pictureLibrary, selectedAlbum);
+                AddAlbumItemControls(pictureLibrary, selectedAlbum);
             }
         }
 
         private bool TryGetSelectedAlbum(SPList albumLibary, out SPFolder folder)
         {
-            var foldersQuery = new SPQuery()
+            var foldersQuery = new SPQuery
             {
                 Query = QueryResources.AlbumsQueryText
             };
@@ -78,19 +74,20 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
         private void AddAlbumControls(SPList albumLibrary)
         {
-            var albumsQuery = new SPQuery()
+            var albumsQuery = new SPQuery
             {
                 Query = QueryResources.AlbumsQueryText,
             };
 
             foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().Select(x => x.Folder))
             {
-                Controls.Add(new Album()
+                Controls.Add(new Album
                 {
                     AlbumName = curAlbum.Name,
-                    ThumbNailUrl = "http://sharepointdev/_layouts/images/siteIcon.png",
+                    ThumbNailUrl = "http://sharepointdev/_layouts/images/siteIcon.png", //TODO: Get the album thumbnail from a new content type field (?)
                     Type = Album.AlbumType.Photo,
                     ItemsCount = curAlbum.ItemCount, //This will include sub-folders in the count, but they shouldn't be there.
+                    //TODO: Add album year/some kind of grouping mechanism for output (albums collection class?)
                 });
             }
         }
@@ -102,7 +99,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
         private void AddAlbumItemControls(SPList albumLibrary, SPFolder fromFolder)
         {
-            var picturesQuery = new SPQuery()
+            var picturesQuery = new SPQuery
             {
                 Query = QueryResources.TopLevelPhotosQueryText,
             };
@@ -116,9 +113,10 @@ namespace GoldenGate.GoldenGatePhotoGallery
             {
                 Controls.Add(new AlbumItem()
                 {
-                    ThumbNailUrl = curPicture["ows_EncodedAbsThumbnailUrl"].ToString(),
+                    ThumbNailUrl = curPicture["ows_EncodedAbsThumbnailUrl"].ToString(), //TODO: does this column always exist?
                     Type = AlbumItem.AlbumItemType.Photo,
                     ItemUrl = String.Empty
+                    //TODO: Populate full picture URL for jQuery magic to display the big image
                 });
             }
         }

@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+// ReSharper disable RedundantUsingDirective
 using System.Linq;
+// ReSharper restore RedundantUsingDirective
+using System.Collections.Specialized;
 using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.SharePoint.Utilities;
