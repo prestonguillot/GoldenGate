@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Album.cs" />
+    <Compile Include="AlbumItem.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GoldenGatePhotoGallery\GoldenGatePhotoGallery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

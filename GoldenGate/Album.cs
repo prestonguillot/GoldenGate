@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.SharePoint.Utilities;
 
 namespace GoldenGate
 {
@@ -41,21 +44,55 @@ namespace GoldenGate
                 return String.Format("{0} {1}", ItemsCount, contentName);
             }
         }
+        private string AlbumLinkText
+        {
+            get
+            {
+                const string queryStringParam = "album";
+                var encodedAlbumName = SPEncode.UrlEncode(AlbumName);
+                var queryStringValue = queryStringParam + "=" + encodedAlbumName;
+
+                if(!Page.Request.QueryString.HasKeys())
+                {
+                    return "?" + queryStringValue;
+                }
+                
+                if(Page.Request.QueryString[queryStringParam] == null)
+                {
+                    return "?" + Page.Request.QueryString + "&" + queryStringValue;
+                }
+
+                //I hate you for making me do this Microsoft.
+                var editableQueryString = new NameValueCollection(Page.Request.QueryString);
+                editableQueryString[queryStringParam] = encodedAlbumName;
+                var sb = new StringBuilder();
+                var first = true;
+                foreach(var curKey in editableQueryString.AllKeys)
+                {
+                    sb.AppendFormat(first ? "?{0}={1}" : "&{0}={1}", curKey, editableQueryString[curKey]);
+                    first = false;
+                }
+
+                return sb.ToString();
+            }
+        }
 
         protected override void Render(HtmlTextWriter writer)
         {
             var htmlOutput = String.Format(
             @"<div id='{0}' class='albumContainer'>
-                 <div class='albumImg'>
-                     <img src='{1}' />
-                 </div>
-                 <div class='albumTitle'>
-                     {2}
-                 </div>
-                 <div class='albumItems'>
-                    {3}
-                 </div>
-             </div>", CssId, ThumbNailUrl, AlbumName, ItemCountText);
+                 <a href='{1}'>
+                     <div class='albumImg'>
+                         <img src='{2}' />
+                     </div>
+                     <div class='albumTitle'>
+                         {3}
+                     </div>
+                     <div class='albumItems'>
+                        {4}
+                     </div>
+                 </a>
+             </div>", CssId, AlbumLinkText, ThumbNailUrl, AlbumName, ItemCountText);
 
             writer.Write(htmlOutput);
         }

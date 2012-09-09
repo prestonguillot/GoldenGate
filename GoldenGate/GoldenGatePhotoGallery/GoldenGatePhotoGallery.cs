@@ -27,6 +27,11 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
         #endregion
 
+        private string SelectedAlbumName
+        {
+            get { return Page.Request.QueryString["album"]; }
+        }
+
         #region Web Part Life Cycle
 
         protected override void CreateChildControls()
@@ -50,35 +55,79 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
         private void CreatePhotoGallery()
         {
-            var albumsQuery = new SPQuery()
-                                  {
-                                      Query = QueryResources.AlbumsQueryText,
-                                  };
-
             var pictureLibrary = SPContext.Current.Web.Lists[PictureLibraryName];
+            SPFolder selectedAlbum;
 
-            foreach(var curAlbum in pictureLibrary.GetItems(albumsQuery).Cast<SPListItem>().Select(x => x.Folder))
+            if (String.IsNullOrEmpty(SelectedAlbumName) || !TryGetSelectedAlbum(pictureLibrary, out selectedAlbum))
+            {
+                this.AddAlbumControls(pictureLibrary);
+                this.AddAlbumItemControls(pictureLibrary);
+            }
+            else
+            {
+                this.AddAlbumItemControls(pictureLibrary, selectedAlbum);
+            }
+        }
+
+        private bool TryGetSelectedAlbum(SPList albumLibary, out SPFolder folder)
+        {
+            var foldersQuery = new SPQuery()
+            {
+                Query = QueryResources.AlbumsQueryText
+            };
+
+            folder = albumLibary.GetItems(foldersQuery)
+                                .Cast<SPListItem>()
+                                .Select(x => x.Folder)
+                                .FirstOrDefault(x => x.Name.Equals(SelectedAlbumName, StringComparison.CurrentCultureIgnoreCase));
+
+            return folder != null;
+        }
+
+        private void AddAlbumControls(SPList albumLibrary)
+        {
+            var albumsQuery = new SPQuery()
+            {
+                Query = QueryResources.AlbumsQueryText,
+            };
+
+            foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().Select(x => x.Folder))
             {
                 Controls.Add(new Album()
-                                 {
-                                     AlbumName = curAlbum.Name,
-                                     ThumbNailUrl = "http://sharepointdev/_layouts/images/siteIcon.png",
-                                     Type = Album.AlbumType.Photo,
-                                     ItemsCount = curAlbum.ItemCount //This will include sub-folders in the count, but they shouldn't be there.
-                                 });
+                {
+                    AlbumName = curAlbum.Name,
+                    ThumbNailUrl = "http://sharepointdev/_layouts/images/siteIcon.png",
+                    Type = Album.AlbumType.Photo,
+                    ItemsCount = curAlbum.ItemCount, //This will include sub-folders in the count, but they shouldn't be there.
+                });
+            }
+        }
+
+        private void AddAlbumItemControls(SPList albumLibrary)
+        {
+            AddAlbumItemControls(albumLibrary, null);
+        }
+
+        private void AddAlbumItemControls(SPList albumLibrary, SPFolder fromFolder)
+        {
+            var picturesQuery = new SPQuery()
+            {
+                Query = QueryResources.TopLevelPhotosQueryText,
+            };
+
+            if(fromFolder != null)
+            {
+                picturesQuery.Folder = fromFolder;
             }
 
-            var picturesQuery = new SPQuery()
-                                    {
-                                        Query = QueryResources.TopLevelPhotosQueryText,
-                                    };
-
-            foreach(SPListItem curPicture in pictureLibrary.GetItems(picturesQuery))
+            foreach (SPListItem curPicture in albumLibrary.GetItems(picturesQuery))
             {
-                Controls.Add(new LiteralControl(String.Format(
-                @"<div class='photo'>
-                    <img src='{0}' />
-                  </div>", curPicture["ows_EncodedAbsThumbnailUrl"])));
+                Controls.Add(new AlbumItem()
+                {
+                    ThumbNailUrl = curPicture["ows_EncodedAbsThumbnailUrl"].ToString(),
+                    Type = AlbumItem.AlbumItemType.Photo,
+                    ItemUrl = String.Empty
+                });
             }
         }
 
