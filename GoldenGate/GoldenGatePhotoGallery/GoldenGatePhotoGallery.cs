@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.ComponentModel;
+using System.Web.UI;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Serialization;
 using Microsoft.SharePoint;
@@ -19,6 +20,20 @@ namespace GoldenGate.GoldenGatePhotoGallery
         [XmlElement("PictureLibraryName")]
         public string PictureLibraryName { get; set; }
 
+        [WebBrowsable]
+        [Personalizable(PersonalizationScope.Shared)]
+        [SPWebCategoryName("Picture Library Configuration")]
+        [WebDisplayName("Custom CSS File")]
+        [XmlElement("CustomCss")]
+        public string CustomCss { get; set; }
+
+        [WebBrowsable]
+        [Personalizable(PersonalizationScope.Shared)]
+        [SPWebCategoryName("Picture Library Configuration")]
+        [WebDisplayName("Custom Script File")]
+        [XmlElement("CustomScript")]
+        public string CustomScript { get; set; }
+
         private string SelectedAlbumName
         {
             get { return Page.Request.QueryString["album"]; }
@@ -33,6 +48,8 @@ namespace GoldenGate.GoldenGatePhotoGallery
         {
             if(ConfigIsValid)
             {
+                //LOL SANDBOX ...
+                this.Controls.Add(new LiteralControl(String.Format(@"<link rel='stylesheet' type='text/css' href='{0}' />", CustomCss)));
                 CreatePhotoGallery();
             }
             else
@@ -111,7 +128,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
             foreach (SPListItem curPicture in albumLibrary.GetItems(picturesQuery))
             {
-                Controls.Add(new AlbumItem()
+                Controls.Add(new AlbumItem
                 {
                     ThumbNailUrl = curPicture["ows_EncodedAbsThumbnailUrl"].ToString(), //TODO: does this column always exist?
                     Type = AlbumItem.AlbumItemType.Photo,
