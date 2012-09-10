@@ -50,6 +50,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
             {
                 //LOL SANDBOX ...
                 this.Controls.Add(new LiteralControl(String.Format(@"<link rel='stylesheet' type='text/css' href='{0}' />", CustomCss)));
+                this.Controls.Add(new LiteralControl(String.Format(@"<script src='{0}' type='text/javascript'></script>", CustomScript)));
                 CreatePhotoGallery();
             }
             else

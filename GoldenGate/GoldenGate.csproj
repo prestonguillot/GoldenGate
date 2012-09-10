@@ -75,7 +75,10 @@
       <DependentUpon>Golden Gate Media.feature</DependentUpon>
     </Content>
     <Content Include="GoldenGatePhotoGallery\Elements.xml" />
+    <Content Include="Resources\PhotoGallery.css" />
+    <Content Include="Resources\PhotoGallery.js" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
