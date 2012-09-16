@@ -24,7 +24,7 @@ namespace GoldenGate
         {
             writer.Write(
             @"<div class='albumGroup'>
-                <div class='albumGroupHeader'>
+                <div class='albumHeader group'>
                     <span class='albumGroupName'>{0}</span>
                 </div>
                 <div class='albumGroupContent'>", GroupName);

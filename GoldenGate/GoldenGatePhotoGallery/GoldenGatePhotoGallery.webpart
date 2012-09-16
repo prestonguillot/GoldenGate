@@ -7,8 +7,8 @@
     </metaData>
     <data>
       <properties>
-        <property name="Title" type="string">GoldenGate - GoldenGatePhotoGallery</property>
-        <property name="Description" type="string">My Web Part</property>
+        <property name="Title" type="string">GoldenGate - GoldenGate Photo Gallery</property>
+        <property name="Description" type="string">GoldenGate Photo Gallery</property>
       </properties>
     </data>
   </webPart>

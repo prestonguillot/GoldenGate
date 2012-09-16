@@ -78,6 +78,8 @@ namespace GoldenGate.GoldenGatePhotoGallery
             if (String.IsNullOrEmpty(SelectedAlbumName) || !TryGetSelectedAlbum(pictureLibrary, out selectedAlbum))
             {
                 AddAlbumControls(pictureLibrary);
+                this.Controls.Add(new LiteralControl(
+                @"<div class='albumHeader recent'>Recent Photos</div>"));
                 AddAlbumItemControls(pictureLibrary);
             }
             else
@@ -108,9 +110,9 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 Query = QueryResources.AlbumsQueryText,
             };
 
-            foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().GroupBy(x => x["Album Year"])) //TODO: handle empty album year, format string value here
+            foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().GroupBy(x => x["Start Date"] == null ? "Timeless" : x.GetFormattedValue("Album Year")).OrderBy(x => x.Key)) //TODO: handle empty album year, format string value here
             {
-                var albumGroup = new AlbumGroup() { GroupName = curAlbum.Key.ToString() }; //TODO: Get real formatted year string
+                var albumGroup = new AlbumGroup() { GroupName = curAlbum.Key.Replace(",", String.Empty) };
 
                 foreach(var album in curAlbum)
                 {
@@ -118,7 +120,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
                     var thumbNailUrlField = album["Album Thumbnail URL"];
                     var thumbNailUrl = thumbNailUrlField != null
                                            ? new SPFieldUrlValue(thumbNailUrlField.ToString()).Url
-                                           : "http://sharepointdev/_layouts/images/siteIcon.png";
+                                           : "http://sharepointdev/SiteAssets/Folder.png"; //TODO: make this URL relative
                     
                     albumGroup.AddAlbum(new Album
                     {
