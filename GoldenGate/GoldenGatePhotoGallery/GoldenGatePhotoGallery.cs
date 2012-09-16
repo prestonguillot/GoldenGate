@@ -97,16 +97,22 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 Query = QueryResources.AlbumsQueryText,
             };
 
-            foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().Select(x => x.Folder))
+            foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().GroupBy(x => x["Album Year"])) //TODO: handle empty album year, format string value here
             {
-                Controls.Add(new Album
+                var albumGroup = new AlbumGroup() { GroupName = curAlbum.Key.ToString() }; //TODO: Get real formatted year string
+
+                foreach(var album in curAlbum.Select(x => x.Folder))
                 {
-                    AlbumName = curAlbum.Name,
-                    ThumbNailUrl = "http://sharepointdev/_layouts/images/siteIcon.png", //TODO: Get the album thumbnail from a new content type field (?)
-                    Type = Album.AlbumType.Photo,
-                    ItemsCount = curAlbum.ItemCount, //This will include sub-folders in the count, but they shouldn't be there.
-                    //TODO: Add album year/some kind of grouping mechanism for output (albums collection class?)
-                });
+                    albumGroup.AddAlbum(new Album
+                    {
+                        AlbumName = album.Name,
+                        ThumbNailUrl = "http://sharepointdev/_layouts/images/siteIcon.png", //TODO: Get the album thumbnail from a new content type field (?)
+                        Type = Album.AlbumType.Photo,
+                        ItemsCount = album.ItemCount, //This will include sub-folders in the count, but they shouldn't be there.
+                    });
+                }
+
+                Controls.Add(albumGroup);
             }
         }
 
