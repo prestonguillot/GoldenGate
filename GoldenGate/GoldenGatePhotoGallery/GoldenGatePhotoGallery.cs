@@ -46,16 +46,27 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
         protected override void CreateChildControls()
         {
-            if(ConfigIsValid)
+            try
             {
-                //LOL SANDBOX ...
-                this.Controls.Add(new LiteralControl(String.Format(@"<link rel='stylesheet' type='text/css' href='{0}' />", CustomCss)));
-                this.Controls.Add(new LiteralControl(String.Format(@"<script src='{0}' type='text/javascript'></script>", CustomScript)));
-                CreatePhotoGallery();
+                if (ConfigIsValid)
+                {
+                    //LOL SANDBOX ...
+                    this.Controls.Add(
+                        new LiteralControl(String.Format(@"<link rel='stylesheet' type='text/css' href='{0}' />",
+                                                         CustomCss)));
+                    this.Controls.Add(
+                        new LiteralControl(String.Format(@"<script src='{0}' type='text/javascript'></script>",
+                                                         CustomScript)));
+                    CreatePhotoGallery();
+                }
+                else
+                {
+                    this.EmitErrorMessage("Web Part Configuration Is Invalid");
+                }
             }
-            else
+            catch(Exception ex)
             {
-                this.EmitErrorMessage("Web Part Configuration Is Invalid");
+                this.Controls.Add(new LiteralControl("Something is horribly wrong: " + ex));
             }
         }
 
@@ -101,14 +112,20 @@ namespace GoldenGate.GoldenGatePhotoGallery
             {
                 var albumGroup = new AlbumGroup() { GroupName = curAlbum.Key.ToString() }; //TODO: Get real formatted year string
 
-                foreach(var album in curAlbum.Select(x => x.Folder))
+                foreach(var album in curAlbum)
                 {
+                    //THANKS SHAREPOINT
+                    var thumbNailUrlField = album["Album Thumbnail URL"];
+                    var thumbNailUrl = thumbNailUrlField != null
+                                           ? new SPFieldUrlValue(thumbNailUrlField.ToString()).Url
+                                           : "http://sharepointdev/_layouts/images/siteIcon.png";
+                    
                     albumGroup.AddAlbum(new Album
                     {
-                        AlbumName = album.Name,
-                        ThumbNailUrl = "http://sharepointdev/_layouts/images/siteIcon.png", //TODO: Get the album thumbnail from a new content type field (?)
+                        AlbumName = album.Folder.Name,
+                        ThumbNailUrl = thumbNailUrl,
                         Type = Album.AlbumType.Photo,
-                        ItemsCount = album.ItemCount, //This will include sub-folders in the count, but they shouldn't be there.
+                        ItemsCount = album.Folder.ItemCount, //This will include sub-folders in the count, but they shouldn't be there.
                     });
                 }
 
