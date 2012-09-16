@@ -110,7 +110,8 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 Query = QueryResources.AlbumsQueryText,
             };
 
-            foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().GroupBy(x => x["Start Date"] == null ? "Timeless" : x.GetFormattedValue("Album Year")).OrderBy(x => x.Key)) //TODO: handle empty album year, format string value here
+
+            foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().GroupBy(x => x["Start Date"] == null ? "Timeless" : x.GetFormattedValue("Album Year")).OrderBy(x => x.Key))
             {
                 var albumGroup = new AlbumGroup() { GroupName = curAlbum.Key.Replace(",", String.Empty) };
 
