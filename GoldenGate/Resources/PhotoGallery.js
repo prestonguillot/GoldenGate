@@ -19,9 +19,3 @@ function showLessAlbums() {
     $("#showLess").hide();
     $(".albumGroup").slice(1).hide(1000);
 }
-
-$(function () {
-    $(".albumItem").click(function () {
-        alert("Don't click me yet");
-    });
-});
