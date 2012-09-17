@@ -84,6 +84,19 @@ namespace GoldenGate.GoldenGatePhotoGallery
             }
             else
             {
+                //TODO: stop being lazy
+                var createdBy = new SPFieldUserValue(SPContext.Current.Web, selectedAlbum.Item["ows_Author"].ToString()).User.Name;
+                var modifiedDate = DateTime.Parse(selectedAlbum.Item["ows_Modified"].ToString()).ToString("MM/dd/yyyy");
+
+                this.Controls.Add(new LiteralControl(String.Format(
+                @"<div class='albumDetailHeader'>
+                    <h2>{0}</h2>
+                    <ul>
+                        <li>{1} Photos</li>
+                        <li>Created by: {2}</li>
+                        <li>Last Updated On: {3}</li>
+                    </ul>
+                  </div>", selectedAlbum.Name, selectedAlbum.ItemCount,createdBy, modifiedDate)));
                 AddAlbumItemControls(pictureLibrary, selectedAlbum);
             }
         }
@@ -110,7 +123,6 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 Query = QueryResources.AlbumsQueryText,
             };
 
-
             foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().GroupBy(x => x["Start Date"] == null ? "Timeless" : x.GetFormattedValue("Album Year")).OrderBy(x => x.Key))
             {
                 var albumGroup = new AlbumGroup() { GroupName = curAlbum.Key.Replace(",", String.Empty) };
@@ -121,7 +133,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
                     var thumbNailUrlField = album["Album Thumbnail URL"];
                     var thumbNailUrl = thumbNailUrlField != null
                                            ? new SPFieldUrlValue(thumbNailUrlField.ToString()).Url
-                                           : "http://sharepointdev/SiteAssets/Folder.png"; //TODO: make this URL relative
+                                           : "/SiteAssets/Folder.png"; //TODO: make this URL relative
                     
                     albumGroup.AddAlbum(new Album
                     {
@@ -157,10 +169,9 @@ namespace GoldenGate.GoldenGatePhotoGallery
             {
                 Controls.Add(new AlbumItem
                 {
-                    ThumbNailUrl = curPicture["ows_EncodedAbsThumbnailUrl"].ToString(), //TODO: does this column always exist?
+                    ThumbNailUrl = curPicture["ows_EncodedAbsThumbnailUrl"].ToString(),
                     Type = AlbumItem.AlbumItemType.Photo,
-                    ItemUrl = String.Empty
-                    //TODO: Populate full picture URL for jQuery magic to display the big image
+                    ItemUrl = curPicture["ows_EncodedAbsUrl"].ToString()
                 });
             }
         }
@@ -184,10 +195,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
                         <FieldRef Name='ContentType' />
                         <Value Type='Computed'>Picture</Value>
                     </Eq>
-                  </Where>
-                  <OrderBy>
-                    <FieldRef Name='Created' Ascending='False' />
-                  </OrderBy>";
+                  </Where>";
         }
     }
 }
