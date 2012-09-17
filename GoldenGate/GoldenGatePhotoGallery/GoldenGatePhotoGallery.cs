@@ -34,6 +34,13 @@ namespace GoldenGate.GoldenGatePhotoGallery
         [XmlElement("CustomScript")]
         public string CustomScript { get; set; }
 
+        [WebBrowsable]
+        [Personalizable(PersonalizationScope.Shared)]
+        [SPWebCategoryName("Picture Library Configuration")]
+        [WebDisplayName("Default Album Image")]
+        [XmlElement("DefaultAlbumImage")]
+        public string DefaultAlbumImage { get; set; }
+
         private string SelectedAlbumName
         {
             get { return Page.Request.QueryString["album"]; }
@@ -133,7 +140,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
                     var thumbNailUrlField = album["Album Thumbnail URL"];
                     var thumbNailUrl = thumbNailUrlField != null
                                            ? new SPFieldUrlValue(thumbNailUrlField.ToString()).Url
-                                           : "/SiteAssets/Folder.png"; //TODO: make this URL relative
+                                           : DefaultAlbumImage ?? String.Empty;
                     
                     albumGroup.AddAlbum(new Album
                     {
