@@ -54,6 +54,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GoldenGatePhotoGallery\GoldenGatePhotoGallery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimplePager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Features\Golden Gate Media\Golden Gate Media.feature">

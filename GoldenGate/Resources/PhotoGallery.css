@@ -47,15 +47,15 @@
     width: 160px;
 }
 
-    .albumImg img
-    {
-        display: block;
-        margin-top: auto;
-        margin-left: auto;
-        margin-right: auto;
-        max-height: 160px;
-        max-width: 160px;
-    }
+.albumImg img
+{
+    display: block;
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 160px;
+    max-width: 160px;
+}
 
 .albumHeader
 {
@@ -65,12 +65,12 @@
     cursor: default;
 }
 
-    .albumHeader > .albumNav
-    {
-        font-weight: normal;
-        margin-left: 5px;
-        cursor: pointer;
-    }
+.albumHeader > .albumNav
+{
+    font-weight: normal;
+    margin-left: 5px;
+    cursor: pointer;
+}
 
 .albumNav.selected
 {
@@ -118,45 +118,78 @@
     margin: 10px;
 }
 
-    .albumItem img
-    {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
+.albumItem img
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 .albumDetailHeader
 {
     height: 50px;
 }
 
-    .albumDetailHeader ul
-    {
-        margin: 0;
-        padding: 0;
-        list-style-type: none;
-    }
+.albumDetailHeader ul
+{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
 
-    .albumDetailHeader li
-    {
-        float: left;
-        margin-right: 2px;
-    }
+.albumDetailHeader li
+{
+    float: left;
+    margin-right: 2px;
+}
 
-        .albumDetailHeader li:after
-        {
-            content: ' |';
-        }
+.albumDetailHeader li:after
+{
+    content: ' |';
+}
 
-    .albumDetailHeader ul li:last-child:after
-    {
-        content: '';
-    }
+.albumDetailHeader ul li:last-child:after
+{
+    content: '';
+}
 
-    .albumDetailHeader + .albumItem
-    {
-        clear: both;
-    }
+.albumDetailHeader + .albumItem
+{
+    clear: both;
+}
+
+.galleryPager
+{
+    clear: both;
+}
+
+.galleryPager ul
+{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    float: right;
+}
+
+.galleryPager li
+{
+    float: left;
+    margin-right: 5px;
+    font-size: small;
+    cursor: pointer;
+}
+
+.galleryPager li:hover
+{
+    text-decoration: underline;
+}
+
+.galleryPager li.selected
+{
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: default;
+}
 
 .s4-wpTopTable
 {

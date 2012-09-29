@@ -42,6 +42,13 @@ namespace GoldenGate.GoldenGatePhotoGallery
         [XmlElement("DefaultAlbumImage")]
         public string DefaultAlbumImage { get; set; }
 
+        [WebBrowsable]
+        [Personalizable(PersonalizationScope.Shared)]
+        [SPWebCategoryName("Picture Library Configuration")]
+        [WebDisplayName("Images Per Page")]
+        [XmlElement("ImagesPerPage")]
+        public int ImagesPerPage { get; set; }
+
         private string SelectedAlbumName
         {
             get { return Page.Request.QueryString["album"]; }
@@ -122,7 +129,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
                                 .FirstOrDefault(x => x.Name.Equals(SelectedAlbumName, StringComparison.CurrentCultureIgnoreCase));
 
             return folder != null;
-        }
+        }   
 
         private void AddAlbumControls(SPList albumLibrary)
         {
@@ -185,6 +192,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 picturesQuery.Folder = fromFolder;
             }
 
+            var itemCount = 0;
             foreach (SPListItem curPicture in albumLibrary.GetItems(picturesQuery))
             {
                 Controls.Add(new AlbumItem
@@ -193,7 +201,10 @@ namespace GoldenGate.GoldenGatePhotoGallery
                     Type = AlbumItem.AlbumItemType.Photo,
                     ItemUrl = curPicture["ows_EncodedAbsUrl"].ToString()
                 });
+                itemCount++;
             }
+
+            Controls.Add(new SimplePager() { PageSize = ImagesPerPage > 0 ? (uint)ImagesPerPage : 0, TotalItems = (uint)itemCount});
         }
 
         private static class QueryResources
