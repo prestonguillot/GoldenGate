@@ -45,9 +45,23 @@ namespace GoldenGate.GoldenGatePhotoGallery
         [WebBrowsable]
         [Personalizable(PersonalizationScope.Shared)]
         [SPWebCategoryName("Picture Library Configuration")]
+        [WebDisplayName("Default Albums Per Group")]
+        [XmlElement("AlbumsPerGroup")]
+        public int AlbumsPerGroup { get; set; }
+
+        [WebBrowsable]
+        [Personalizable(PersonalizationScope.Shared)]
+        [SPWebCategoryName("Picture Library Configuration")]
         [WebDisplayName("Images Per Page")]
         [XmlElement("ImagesPerPage")]
         public int ImagesPerPage { get; set; }
+
+        [WebBrowsable]
+        [Personalizable(PersonalizationScope.Shared)]
+        [SPWebCategoryName("Picture Library Configuration")]
+        [WebDisplayName("Enable Image Lazy Loading")]
+        [XmlElement("LazyLoadingEnabled")]
+        public bool LazyLoadingEnabled { get; set; }
 
         private string SelectedAlbumName
         {
@@ -142,7 +156,15 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().GroupBy(x => x["Start Date"] == null ? "Timeless" : x.GetFormattedValue("Album Year"))
                             .OrderByDescending(x => x.Key).ToList();
 
-            var albumSelectorHtml = new StringBuilder(@"<div class='albumHeader'>Albums: ", 250);
+            //HACK: Get the albums with no date value at the end of the the list instead of the begining.
+            var timelessPhotos = albumGroups.FirstOrDefault(x => x.Key == "Timeless");
+            if(timelessPhotos != null)
+            {
+                albumGroups.Remove(timelessPhotos);
+                albumGroups.Add(timelessPhotos);
+            }
+
+            var albumSelectorHtml = new StringBuilder(String.Format(@"<div class='albumHeader' data-albums-visible-for-groups='{0}'>Albums: ", AlbumsPerGroup), 250);
             foreach(var albumGroup in albumGroups.Select(x => x.Key))
             {
                 albumSelectorHtml.AppendFormat(@"<span class='albumNav groupName'>{0}</span>", albumGroup.Replace(",", String.Empty));

@@ -1,6 +1,4 @@
-﻿var defaultAlbumsPerGroupDisplayed = 10;
-
-$(function () {
+﻿$(function () {
     $(".albumGroup").slice(1).hide();
 
     $(".albumHeader > .albumNav:first").addClass("selected");
@@ -9,15 +7,18 @@ $(function () {
         toggleAlbumGroupDisplay($(this));
     });
 
-    $(".albumGroup").each(function (index, albumGroup) {
-        var albumGroupAlbums = $(albumGroup).find(".albumGroupContent > .albumContainer");
-        if (albumGroupAlbums.length > defaultAlbumsPerGroupDisplayed) {
-            albumGroupAlbums.slice(defaultAlbumsPerGroupDisplayed).hide();
-            $(albumGroup).children(".albumGroupContent").append($("<div>").addClass("albumContentToggle more").click(function () {
-                toggleAlbumsDisplay(albumGroupAlbums, $(this));
-            }).text("Show More"));
-        }
-    });
+    var defaultAlbumsPerGroupDisplayed = $(".albumHeader").data("albumsVisibleForGroups");
+    if (defaultAlbumsPerGroupDisplayed > 0) {
+        $(".albumGroup").each(function(index, albumGroup) {
+            var albumGroupAlbums = $(albumGroup).find(".albumGroupContent > .albumContainer");
+            if (albumGroupAlbums.length > defaultAlbumsPerGroupDisplayed) {
+                albumGroupAlbums.slice(defaultAlbumsPerGroupDisplayed).hide();
+                $(albumGroup).children(".albumGroupContent").append($("<div>").addClass("albumContentToggle more").click(function() {
+                    toggleAlbumsDisplay(albumGroupAlbums, $(this));
+                }).text("Show More"));
+            }
+        });
+    }
 
     $(".galleryPager").each(function (index, albumPager) {
         $(albumPager).siblings(".albumItem").slice($(albumPager).data("pageSize")).hide();
