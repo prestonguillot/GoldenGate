@@ -23,10 +23,7 @@ namespace GoldenGate
         protected override void Render(HtmlTextWriter writer)
         {
             writer.Write(
-            @"<div class='albumGroup'>
-                <div class='albumHeader group'>
-                    <span class='albumGroupName'>{0}</span>
-                </div>
+            @"<div class='albumGroup' id='albumGroup{0}'>
                 <div class='albumGroupContent'>", GroupName);
 
             this.RenderChildren(writer);

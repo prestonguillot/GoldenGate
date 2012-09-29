@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.ComponentModel;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Serialization;
@@ -86,7 +87,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
             {
                 AddAlbumControls(pictureLibrary);
                 this.Controls.Add(new LiteralControl(
-                @"<div class='albumHeader recent'>Recent Photos</div>"));
+                @"<div class='albumHeader recent'>Photos Posted to the News Feed</div>"));
                 AddAlbumItemControls(pictureLibrary);
             }
             else
@@ -130,7 +131,19 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 Query = QueryResources.AlbumsQueryText,
             };
 
-            foreach (var curAlbum in albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().GroupBy(x => x["Start Date"] == null ? "Timeless" : x.GetFormattedValue("Album Year")).OrderBy(x => x.Key))
+            var albumGroups =
+                albumLibrary.GetItems(albumsQuery).Cast<SPListItem>().GroupBy(x => x["Start Date"] == null ? "Timeless" : x.GetFormattedValue("Album Year"))
+                            .OrderByDescending(x => x.Key).ToList();
+
+            var albumSelectorHtml = new StringBuilder(@"<div class='albumHeader'>Albums: ", 250);
+            foreach(var albumGroup in albumGroups.Select(x => x.Key))
+            {
+                albumSelectorHtml.AppendFormat(@"<span class='albumNav groupName'>{0}</span>", albumGroup.Replace(",", String.Empty));
+            }
+            albumSelectorHtml.Append("</div>");
+            Controls.Add(new LiteralControl(albumSelectorHtml.ToString()));
+
+            foreach (var curAlbum in albumGroups)
             {
                 var albumGroup = new AlbumGroup() { GroupName = curAlbum.Key.Replace(",", String.Empty) };
 
@@ -202,7 +215,10 @@ namespace GoldenGate.GoldenGatePhotoGallery
                         <FieldRef Name='ContentType' />
                         <Value Type='Computed'>Picture</Value>
                     </Eq>
-                  </Where>";
+                  </Where>
+                  <OrderBy>
+                    <FieldRef Name='Created' Ascending='False' />
+                  </OrderBy>";
         }
     }
 }

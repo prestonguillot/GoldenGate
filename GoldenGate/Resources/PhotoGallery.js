@@ -1,21 +1,41 @@
-﻿$(function () {
-    $(".albumGroup").slice(1).hide();
-});
+﻿var defaultAlbumsPerGroupDisplayed = 3;
 
 $(function () {
-    $(".albumGroup > .albumHeader").filter(":first")
-        .append($("<span>", { id: "showMore" }).click(showMoreAlbums).append("| See More"))
-        .append($("<span>", { id: "showLess"}).click(showLessAlbums).append("| See Less").hide());
+    $(".albumGroup").slice(1).hide();
+
+    $(".albumHeader > .albumNav:first").addClass("selected");
+
+    $(".albumHeader > .albumNav").click(function () {
+        toggleAlbumGroupDisplay($(this));
+    });
+
+    $(".albumGroup").each(function (index, albumGroup) {
+        var albumGroupAlbums = $(albumGroup).find(".albumGroupContent > .albumContainer");
+        if (albumGroupAlbums.length > defaultAlbumsPerGroupDisplayed) {
+            albumGroupAlbums.slice(defaultAlbumsPerGroupDisplayed).hide();
+            $(albumGroup).children(".albumGroupContent").append($("<div>").addClass("albumContentToggle more").click(function () {
+                toggleAlbumsDisplay(albumGroupAlbums, $(this));
+            }).text("Show More"));
+        }
+    });
 });
 
-function showMoreAlbums() {
-    $("#showMore").hide();
-    $("#showLess").show();
-    $(".albumGroup").slice(1).show(1000);
+function toggleAlbumGroupDisplay(toggleGroupLink) {
+    if (!toggleGroupLink.hasClass("selected")) {
+        toggleGroupLink.siblings(".selected").removeClass("selected");
+        toggleGroupLink.addClass("selected");
+        $(".albumGroup").hide();
+        $("#albumGroup" + toggleGroupLink.text()).fadeIn("fast");
+    }
 }
 
-function showLessAlbums() {
-    $("#showMore").show();
-    $("#showLess").hide();
-    $(".albumGroup").slice(1).hide(1000);
+function toggleAlbumsDisplay(albumGroupAlbums, toggleLink) {
+
+    $(albumGroupAlbums).slice(defaultAlbumsPerGroupDisplayed).toggle("fast");
+
+    if ($(toggleLink).hasClass("more")) {
+        $(toggleLink).removeClass("more").addClass("less").text("Show Less");
+    } else if ($(toggleLink).hasClass("less")) {
+        $(toggleLink).removeClass("less").addClass("more").text("Show More");
+    }
 }
