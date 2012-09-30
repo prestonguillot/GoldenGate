@@ -95,7 +95,7 @@ namespace GoldenGate
                         {5}
                      </div>
                  </a>
-             </div>", CssId, AlbumLinkText, LazyImageLoadEnabled ? "/_layouts/images/loading16.gif" : ThumbNailUrl, ThumbNailUrl, AlbumName, ItemCountText);
+             </div>", CssId, AlbumLinkText, LazyImageLoadEnabled ? "/_layouts/images/ImagePreviewHH.PNG" : ThumbNailUrl, ThumbNailUrl, AlbumName, ItemCountText);
 
             writer.Write(htmlOutput);
         }

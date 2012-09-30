@@ -37,7 +37,7 @@ namespace GoldenGate
                     <a href='javascript:OpenPopUpPage(""{1}"");'>
                         <img src='{2}' data-image-source='{3}'/>
                     </a>
-              </div>", CssClass, ItemUrl, LazyImageLoadEnabled ? "/_layouts/images/loading16.gif" : ThumbNailUrl, ThumbNailUrl);
+              </div>", CssClass, ItemUrl, LazyImageLoadEnabled ? "/_layouts/images/ImagePreviewHH.PNG" : ThumbNailUrl, ThumbNailUrl);
 
             writer.Write(htmlOutput);
         }

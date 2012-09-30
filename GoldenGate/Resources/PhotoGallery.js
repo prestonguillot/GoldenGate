@@ -23,6 +23,7 @@
 
     $(".galleryPager").each(function (index, albumPager) {
         var pageSize = $(albumPager).data("pageSize");
+        if (pageSize >= $(albumPager).data("totalItems")) { $(albumPager).hide(); }
         var imagesToLoad = pageSize > 0 ? $(albumPager).siblings(".albumItem").slice(0, pageSize).find("img")
                                         : $(albumPager).siblings(".albumItem").find("img");
         $(albumPager).siblings(".albumItem").slice($(albumPager).data("pageSize")).hide();
