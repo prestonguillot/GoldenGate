@@ -11,6 +11,7 @@ namespace GoldenGate
         public string ThumbNailUrl { get; set; }
         public string ItemUrl { get; set; }
         public AlbumItemType Type { get; set; }
+        public bool LazyImageLoadEnabled { get; set; }
         public new string CssClass
         {
             get
@@ -33,11 +34,10 @@ namespace GoldenGate
         {
             var htmlOutput = String.Format(
             @"<div class='{0}'>
-                    <a href='javascript:OpenPopUpPage(""{2}"");'>
-                        <img src='{1}' />
-                        <input type='hidden' value='{2}' />
+                    <a href='javascript:OpenPopUpPage(""{1}"");'>
+                        <img src='{2}' data-image-source='{3}'/>
                     </a>
-              </div>", CssClass, ThumbNailUrl, ItemUrl);
+              </div>", CssClass, ItemUrl, LazyImageLoadEnabled ? "/_layouts/images/loading16.gif" : ThumbNailUrl, ThumbNailUrl);
 
             writer.Write(htmlOutput);
         }

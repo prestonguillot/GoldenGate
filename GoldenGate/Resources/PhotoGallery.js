@@ -1,27 +1,32 @@
 ﻿$(function () {
     $(".albumGroup").slice(1).hide();
 
-    $(".albumHeader > .albumNav:first").addClass("selected");
-
-    $(".albumHeader > .albumNav").click(function () {
-        toggleAlbumGroupDisplay($(this));
-    });
-
     var defaultAlbumsPerGroupDisplayed = $(".albumHeader").data("albumsVisibleForGroups");
+    var firstAlbumGroup = $(".albumHeader > .albumNav:first");
+    $(".albumHeader > .albumNav").click(function () {
+        toggleAlbumGroupDisplay($(this), defaultAlbumsPerGroupDisplayed);
+    });
+    toggleAlbumGroupDisplay($(firstAlbumGroup), defaultAlbumsPerGroupDisplayed);
+    $(firstAlbumGroup).addClass("selected");
+
     if (defaultAlbumsPerGroupDisplayed > 0) {
-        $(".albumGroup").each(function(index, albumGroup) {
+        $(".albumGroup").each(function (index, albumGroup) {
             var albumGroupAlbums = $(albumGroup).find(".albumGroupContent > .albumContainer");
             if (albumGroupAlbums.length > defaultAlbumsPerGroupDisplayed) {
                 albumGroupAlbums.slice(defaultAlbumsPerGroupDisplayed).hide();
-                $(albumGroup).children(".albumGroupContent").append($("<div>").addClass("albumContentToggle more").click(function() {
-                    toggleAlbumsDisplay(albumGroupAlbums, $(this));
+                $(albumGroup).children(".albumGroupContent").append($("<div>").addClass("albumContentToggle more").click(function () {
+                    toggleAlbumsDisplay(albumGroupAlbums, $(this), defaultAlbumsPerGroupDisplayed);
                 }).text("Show More"));
             }
         });
     }
 
     $(".galleryPager").each(function (index, albumPager) {
+        var pageSize = $(albumPager).data("pageSize");
+        var imagesToLoad = pageSize > 0 ? $(albumPager).siblings(".albumItem").slice(0, pageSize).find("img")
+                                        : $(albumPager).siblings(".albumItem").find("img");
         $(albumPager).siblings(".albumItem").slice($(albumPager).data("pageSize")).hide();
+        $(imagesToLoad).each(function () { swapImgSrc($(this)); });
     });
 
     $(".galleryPager > ul > li").click(function () {
@@ -49,17 +54,22 @@
     });
 });
 
-function toggleAlbumGroupDisplay(toggleGroupLink) {
+function toggleAlbumGroupDisplay(toggleGroupLink, defaultAlbumsPerGroupDisplayed) {
     if (!toggleGroupLink.hasClass("selected")) {
         toggleGroupLink.siblings(".selected").removeClass("selected");
         toggleGroupLink.addClass("selected");
         $(".albumGroup").hide();
-        $("#albumGroup" + toggleGroupLink.text()).fadeIn("fast");
+        var albumGroup = $("#albumGroup" + toggleGroupLink.text());
+        $(albumGroup).fadeIn("fast");
+        var albumImagesToLoad = defaultAlbumsPerGroupDisplayed > 0 ? $(albumGroup).find("img").slice(0, defaultAlbumsPerGroupDisplayed)
+                                                                   : $(albumGroup).find("img");
+        $(albumImagesToLoad).each(function () { swapImgSrc($(this)); });
     }
 }
 
-function toggleAlbumsDisplay(albumGroupAlbums, toggleLink) {
+function toggleAlbumsDisplay(albumGroupAlbums, toggleLink, defaultAlbumsPerGroupDisplayed) {
     $(albumGroupAlbums).slice(defaultAlbumsPerGroupDisplayed).toggle("fast");
+    $(albumGroupAlbums).find("img").each(function () { swapImgSrc($(this)); });
 
     if ($(toggleLink).hasClass("more")) {
         $(toggleLink).removeClass("more").addClass("less").text("Show Less");
@@ -73,5 +83,15 @@ function pageAlbumItems(pager, albumItems) {
     var endIndex = startIndex + $(pager).data("pageSize");
     endIndex = endIndex > $(albumItems).length ? $(albumItems).length : endIndex;
     $(albumItems).hide();
-    $(albumItems).slice(startIndex, endIndex).fadeIn("fast");
+    $(albumItems).slice(startIndex, endIndex).fadeIn("fast").find("img").each(function () {
+        swapImgSrc($(this));
+    });
+}
+
+function swapImgSrc(imageElement) {
+    var currentSrc = $(imageElement).attr("src");
+    var dataSrc = $(imageElement).data("imageSource");
+    if (dataSrc != null && dataSrc != currentSrc) {
+        $(imageElement).attr("src", dataSrc);
+    }
 }

@@ -14,6 +14,8 @@ namespace GoldenGate.GoldenGatePhotoGallery
     [ToolboxItemAttribute(false)]
     public class GoldenGatePhotoGallery : WebPart
     {
+        #region Web Part Properties
+
         [WebBrowsable]
         [Personalizable(PersonalizationScope.Shared)]
         [SPWebCategoryName("Picture Library Configuration")]
@@ -62,6 +64,8 @@ namespace GoldenGate.GoldenGatePhotoGallery
         [WebDisplayName("Enable Image Lazy Loading")]
         [XmlElement("LazyLoadingEnabled")]
         public bool LazyLoadingEnabled { get; set; }
+
+        #endregion
 
         private string SelectedAlbumName
         {
@@ -188,6 +192,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
                     {
                         AlbumName = album.Folder.Name,
                         ThumbNailUrl = thumbNailUrl,
+                        LazyImageLoadEnabled = this.LazyLoadingEnabled,
                         Type = Album.AlbumType.Photo,
                         ItemsCount = album.Folder.ItemCount, //This will include sub-folders in the count, but they shouldn't be there.
                     });
@@ -220,8 +225,10 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 Controls.Add(new AlbumItem
                 {
                     ThumbNailUrl = curPicture["ows_EncodedAbsThumbnailUrl"].ToString(),
+                    LazyImageLoadEnabled = this.LazyLoadingEnabled,
                     Type = AlbumItem.AlbumItemType.Photo,
-                    ItemUrl = curPicture["ows_EncodedAbsUrl"].ToString()
+                    //ItemUrl = curPicture["ows_EncodedAbsUrl"].ToString()
+                    ItemUrl = curPicture["ows_EncodedAbsWebImgUrl"].ToString()
                 });
                 itemCount++;
             }

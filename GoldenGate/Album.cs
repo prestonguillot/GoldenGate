@@ -78,6 +78,7 @@ namespace GoldenGate
                 return sb.ToString();
             }
         }
+        public bool LazyImageLoadEnabled { get; set; }
 
         protected override void Render(HtmlTextWriter writer)
         {
@@ -85,16 +86,16 @@ namespace GoldenGate
             @"<div id='{0}' class='albumContainer'>
                  <a href='{1}'>
                      <div class='albumImg'>
-                         <img src='{2}' />
+                         <img src='{2}' data-image-source='{3}' />
                      </div>
                      <div class='albumTitle'>
-                         {3}
+                         {4}
                      </div>
                      <div class='albumItems'>
-                        {4}
+                        {5}
                      </div>
                  </a>
-             </div>", CssId, AlbumLinkText, ThumbNailUrl, AlbumName, ItemCountText);
+             </div>", CssId, AlbumLinkText, LazyImageLoadEnabled ? "/_layouts/images/loading16.gif" : ThumbNailUrl, ThumbNailUrl, AlbumName, ItemCountText);
 
             writer.Write(htmlOutput);
         }
