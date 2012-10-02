@@ -2,10 +2,12 @@
 using System.Linq;
 using System.ComponentModel;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Serialization;
 using Microsoft.SharePoint;
+using Microsoft.SharePoint.Utilities;
 using Microsoft.SharePoint.WebPartPages;
 using WebPart = System.Web.UI.WebControls.WebParts.WebPart;
 
@@ -175,6 +177,11 @@ namespace GoldenGate.GoldenGatePhotoGallery
             }
             albumSelectorHtml.Append("</div>");
             Controls.Add(new LiteralControl(albumSelectorHtml.ToString()));
+
+            var derp = String.Format("/_layouts/Upload.aspx?List={0}&RootFolder={1}&Source={2}", albumLibrary.ID, albumLibrary.RootFolder.ServerRelativeUrl,HttpContext.Current.Request.Url);
+            derp = SPEncode.ScriptEncode(derp);
+            var uploadString = String.Format(@"EditItem2(event, '{0}')", derp);
+            Controls.Add(new LiteralControl(String.Format(@"<div onClick=""{0}"">CLICK ME</div>", uploadString)));
 
             foreach (var curAlbum in albumGroups)
             {
