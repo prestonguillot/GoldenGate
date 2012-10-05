@@ -200,3 +200,11 @@
     background-position-y: 0% !important;
     background-color: transparent !important;
 }
+
+.albumUpload
+{
+    padding: 5px 5px 5px 5px;
+    border: 1px #cccccc solid;
+    float: right;
+    font-weight: normal;
+}
