@@ -186,7 +186,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
             foreach (var curAlbum in albumGroups)
             {
-                var albumGroup = new AlbumGroup() { GroupName = curAlbum.Key.Replace(",", String.Empty) };
+                var albumGroup = new AlbumGroup { GroupName = curAlbum.Key.Replace(",", String.Empty) };
 
                 foreach(var album in curAlbum)
                 {
@@ -241,12 +241,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 itemCount++;
             }
 
-            Controls.Add(new SimplePager() { PageSize = ImagesPerPage > 0 ? (uint)ImagesPerPage : 0, TotalItems = (uint)itemCount});
-        }
-
-        private static string GenerateUploadLink(SPList albumLibrary)
-        {
-            return GenerateUploadLink(albumLibrary, albumLibrary.RootFolder);
+            Controls.Add(new SimplePager { PageSize = ImagesPerPage > 0 ? (uint)ImagesPerPage : 0, TotalItems = (uint)itemCount});
         }
 
         private static string GenerateUploadLink(SPList albumLibrary, SPFolder destinationFolder)
