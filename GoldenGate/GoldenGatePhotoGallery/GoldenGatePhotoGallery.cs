@@ -2,10 +2,12 @@
 using System.Linq;
 using System.ComponentModel;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Serialization;
 using Microsoft.SharePoint;
+using Microsoft.SharePoint.Utilities;
 using Microsoft.SharePoint.WebPartPages;
 using WebPart = System.Web.UI.WebControls.WebParts.WebPart;
 
@@ -121,15 +123,19 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 var createdBy = new SPFieldUserValue(SPContext.Current.Web, selectedAlbum.Item["ows_Author"].ToString()).User.Name;
                 var modifiedDate = DateTime.Parse(selectedAlbum.Item["ows_Modified"].ToString()).ToString("MM/dd/yyyy");
 
+                var upLoadControlHtml = GenerateUploadControlHtml(pictureLibrary, selectedAlbum);
+                var albumBackLink = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path);
                 this.Controls.Add(new LiteralControl(String.Format(
                 @"<div class='albumDetailHeader'>
-                    <h2>{0}</h2>
+                    <a href='{0}' id='albumBack'>&lt; Back to Albums</a>
+                    {1}
+                    <h2>{2}</h2>
                     <ul>
-                        <li>{1} Photos</li>
-                        <li>Created by: {2}</li>
-                        <li>Last Updated On: {3}</li>
+                        <li>{3} Photos</li>
+                        <li>Created by: {4}</li>
+                        <li>Last Updated On: {5}</li>
                     </ul>
-                  </div>", selectedAlbum.Name, selectedAlbum.ItemCount,createdBy, modifiedDate)));
+                  </div>", albumBackLink, upLoadControlHtml, selectedAlbum.Name, selectedAlbum.ItemCount,createdBy, modifiedDate)));
                 AddAlbumItemControls(pictureLibrary, selectedAlbum);
             }
         }
@@ -168,13 +174,15 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 albumGroups.Add(timelessPhotos);
             }
 
-            var albumSelectorHtml = new StringBuilder(String.Format(@"<div class='albumHeader' data-albums-visible-for-groups='{0}'>Albums: ", AlbumsPerGroup), 250);
+            var headerHtml = new StringBuilder(String.Format(@"<div class='albumHeader' data-albums-visible-for-groups='{0}'>Albums: ", AlbumsPerGroup), 250);
             foreach(var albumGroup in albumGroups.Select(x => x.Key))
             {
-                albumSelectorHtml.AppendFormat(@"<span class='albumNav groupName'>{0}</span>", albumGroup.Replace(",", String.Empty));
+                headerHtml.AppendFormat(@"<span class='albumNav groupName'>{0}</span>", albumGroup.Replace(",", String.Empty));
             }
-            albumSelectorHtml.Append("</div>");
-            Controls.Add(new LiteralControl(albumSelectorHtml.ToString()));
+            var uploadControlHtml = GenerateUploadControlHtml(albumLibrary);
+            headerHtml.Append(uploadControlHtml);
+            headerHtml.Append("</div>");
+            Controls.Add(new LiteralControl(headerHtml.ToString()));
 
             foreach (var curAlbum in albumGroups)
             {
@@ -234,6 +242,30 @@ namespace GoldenGate.GoldenGatePhotoGallery
             }
 
             Controls.Add(new SimplePager() { PageSize = ImagesPerPage > 0 ? (uint)ImagesPerPage : 0, TotalItems = (uint)itemCount});
+        }
+
+        private static string GenerateUploadLink(SPList albumLibrary)
+        {
+            return GenerateUploadLink(albumLibrary, albumLibrary.RootFolder);
+        }
+
+        private static string GenerateUploadLink(SPList albumLibrary, SPFolder destinationFolder)
+        {
+            var formLink = String.Format("/_layouts/Upload.aspx?List={0}&RootFolder={1}&Source={2}", albumLibrary.ID, destinationFolder.ServerRelativeUrl, HttpContext.Current.Request.Url);
+            formLink = SPEncode.ScriptEncode(formLink);
+            var javascriptActionLink = String.Format(@"EditItem2(event, '{0}')", formLink);
+            return javascriptActionLink;
+        }
+
+        private static string GenerateUploadControlHtml(SPList albumLibrary)
+        {
+            return GenerateUploadControlHtml(albumLibrary, albumLibrary.RootFolder);
+        }
+
+        private static string GenerateUploadControlHtml(SPList albumLibrary, SPFolder destinationFolder)
+        {
+            var javaScriptActionLink = GenerateUploadLink(albumLibrary, destinationFolder);
+            return String.Format(@"<span class='albumUpload' onClick=""{0}"">Add Photos</span>", javaScriptActionLink);
         }
 
         private static class QueryResources
