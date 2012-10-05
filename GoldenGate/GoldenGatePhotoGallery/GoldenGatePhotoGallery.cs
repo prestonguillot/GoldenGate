@@ -125,6 +125,11 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
                 var upLoadControlHtml = GenerateUploadControlHtml(pictureLibrary, selectedAlbum);
                 var albumBackLink = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path);
+                //HACK: When using HTTPS this returns a url in the form of "http://mysite:443" instead of "https://mysite" which causes mixed content warnings, the following block repairs this, poorly
+                if(albumBackLink.StartsWith("http://") && albumBackLink.Contains(":443/"))
+                {
+                    albumBackLink = albumBackLink.Replace("http://", "https://").Replace(":443/", "/");
+                }
                 this.Controls.Add(new LiteralControl(String.Format(
                 @"<div class='albumDetailHeader'>
                     <a href='{0}' id='albumBack'>&lt; Back to Albums</a>
@@ -246,7 +251,8 @@ namespace GoldenGate.GoldenGatePhotoGallery
 
         private static string GenerateUploadLink(SPList albumLibrary, SPFolder destinationFolder)
         {
-            var formLink = String.Format("/_layouts/Upload.aspx?List={0}&RootFolder={1}&Source={2}", albumLibrary.ID, destinationFolder.ServerRelativeUrl, HttpContext.Current.Request.Url);
+            var layoutsUrl = albumLibrary.ParentWeb.ServerRelativeUrl + (albumLibrary.ParentWeb.ServerRelativeUrl.EndsWith("/") ? string.Empty : "/") + "_layouts";
+            var formLink = String.Format("{0}/Upload.aspx?List={1}&RootFolder={2}&Source={3}", layoutsUrl, albumLibrary.ID, destinationFolder.ServerRelativeUrl, HttpContext.Current.Request.Url);
             formLink = SPEncode.ScriptEncode(formLink);
             var javascriptActionLink = String.Format(@"EditItem2(event, '{0}')", formLink);
             return javascriptActionLink;
