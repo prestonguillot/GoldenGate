@@ -133,10 +133,10 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 }
                 this.Controls.Add(new LiteralControl(String.Format(
                 @"<div class='albumDetailHeader'>
-                    <a href='{0}' id='albumBack'>&lt; Back to Albums</a>
+                    <a href='{0}' id='albumBack' class='selectable'>&lt; Back to Albums</a>
                     {1}
                     {2}
-                    <h2>{3}</h2>
+                    <h2 id='albumTitle'>{3}</h2>
                     <ul>
                         <li>{4} Photos</li>
                         <li>Created by: {5}</li>
@@ -182,15 +182,20 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 albumGroups.Add(timelessPhotos);
             }
 
+            var uploadControlHtml = GenerateUploadControlHtml(albumLibrary);
+            var addAlbumControlHtml = GenerateAddAlbumControHtml(albumLibrary);
+            var topHtml = String.Format(@"<div class='titleRow'>
+                                            <span id='albumTitle'>Photos</span>
+                                            {0}
+                                            {1}
+                                          </div>", uploadControlHtml, addAlbumControlHtml);
+            Controls.Add(new LiteralControl(topHtml));
+
             var headerHtml = new StringBuilder(String.Format(@"<div class='albumHeader' data-albums-visible-for-groups='{0}'>Albums: ", AlbumsPerGroup), 250);
             foreach(var albumGroup in albumGroups.Select(x => x.Key))
             {
-                headerHtml.AppendFormat(@"<span class='albumNav groupName'>{0}</span>", albumGroup.Replace(",", String.Empty));
+                headerHtml.AppendFormat(@"<span class='albumNav groupName selectable'>{0}</span>", albumGroup.Replace(",", String.Empty));
             }
-            var uploadControlHtml = GenerateUploadControlHtml(albumLibrary);
-            headerHtml.Append(uploadControlHtml);
-            var addAlbumControlHtml = GenerateAddAlbumControHtml(albumLibrary);
-            headerHtml.Append(addAlbumControlHtml);
             headerHtml.Append("</div>");
             Controls.Add(new LiteralControl(headerHtml.ToString()));
 

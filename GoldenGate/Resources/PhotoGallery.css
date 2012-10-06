@@ -21,7 +21,6 @@
     color: inherit;
 }
 
-
 .albumContainer a img
 {
     border: 0;
@@ -59,7 +58,6 @@
 
 .albumHeader
 {
-    font-weight: bold;
     margin-bottom: 5px;
     margin-top: 5px;
     cursor: default;
@@ -72,18 +70,9 @@
     cursor: pointer;
 }
 
-.albumNav.selected
-{
-    text-decoration: underline;
-    cursor: default;
-}
-
 .albumContentToggle
 {
     clear: both;
-    font-weight: bold;
-    text-decoration: underline;
-    cursor: pointer;
 }
 
 .albumTitle
@@ -171,29 +160,11 @@
     float: left;
     margin-right: 5px;
     font-size: small;
-    cursor: pointer;
-}
-
-.galleryPager li:hover
-{
-    text-decoration: underline;
-}
-
-.galleryPager li.selected
-{
-    font-weight: bold;
-    text-decoration: underline;
-    cursor: default;
 }
 
 .s4-wpTopTable
 {
-    background-image: url("/ourfirm/offices/sanfran/Style Library/Images/nav_bg.png") !important;
-    background-attachment: scroll !important;
-    background-repeat: repeat !important;
-    background-position-x: 0% !important;
-    background-position-y: 0% !important;
-    background-color: transparent !important;
+    background-color: white;
 }
 
 .albumButton
@@ -205,7 +176,39 @@
     margin: 2px 2px;
 }
 
-.albumClear 
+.albumClear
 {
     clear: both;
+}
+
+#albumTitle
+{
+    font-size: 10pt;
+    color: #f04b2a;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.selectable
+{
+    color: #365fac !important;
+    text-decoration: underline;
+}
+
+.selectable:hover
+{
+    color: #f04b2a !important;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.selected
+{
+    color: #f04b2a !important;
+    text-decoration: underline;
+}
+
+.selected:hover
+{
+    cursor: default !important;
 }

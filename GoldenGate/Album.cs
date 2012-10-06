@@ -36,10 +36,10 @@ namespace GoldenGate
                 switch (Type)
                 {
                     case AlbumType.Movie:
-                        contentName =  ItemsCount > 1 ? "Videos" : "Video";
+                        contentName =  ItemsCount != 1 ? "Videos" : "Video";
                         break;
                     case AlbumType.Photo:
-                        contentName = ItemsCount > 1 ? "Photos" : "Photo";
+                        contentName = ItemsCount != 1 ? "Photos" : "Photo";
                         break;
                 }
 
@@ -88,7 +88,7 @@ namespace GoldenGate
                      <div class='albumImg'>
                          <img src='{2}' data-image-source='{3}' />
                      </div>
-                     <div class='albumTitle'>
+                     <div class='albumTitle selectable'>
                          {4}
                      </div>
                      <div class='albumItems'>

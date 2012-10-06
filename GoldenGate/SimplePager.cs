@@ -14,14 +14,14 @@ namespace GoldenGate
                 @"<div class='galleryPager' data-total-items='{0}' data-page-size='{1}' data-current-page='1'>
                     
                     <ul>
-                        <li>Prev</li>
-                        <li class='selected'>1</li>", TotalItems, PageSize), 500);
+                        <li class='selectable'>Prev</li>
+                        <li class='selectable selected'>1</li>", TotalItems, PageSize), 500);
             for (int i = (int)TotalItems - (int)PageSize, page = 2; i > 0; i -= (int)PageSize, page++)
             {
-                htmlOutPut.AppendFormat("<li>{0}</li>", page);
+                htmlOutPut.AppendFormat("<li class='selectable'>{0}</li>", page);
             }
             htmlOutPut.Append(
-                @"      <li>Next</li>
+                @"      <li class='selectable'>Next</li>
                     </ul>
                   </div");
 

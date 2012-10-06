@@ -14,7 +14,7 @@
             var albumGroupAlbums = $(albumGroup).find(".albumGroupContent > .albumContainer");
             if (albumGroupAlbums.length > defaultAlbumsPerGroupDisplayed) {
                 albumGroupAlbums.slice(defaultAlbumsPerGroupDisplayed).hide();
-                $(albumGroup).children(".albumGroupContent").append($("<div>").addClass("albumContentToggle more").click(function () {
+                $(albumGroup).children(".albumGroupContent").append($("<div>").addClass("albumContentToggle selectable more").click(function () {
                     toggleAlbumsDisplay(albumGroupAlbums, $(this), defaultAlbumsPerGroupDisplayed);
                 }).text("Show More"));
             }
