@@ -153,11 +153,6 @@
     content: '';
 }
 
-.albumDetailHeader + .albumItem
-{
-    clear: both;
-}
-
 .galleryPager
 {
     clear: both;
@@ -208,4 +203,9 @@
     float: right;
     font-weight: normal;
     margin: 2px 2px;
+}
+
+.albumClear 
+{
+    clear: both;
 }

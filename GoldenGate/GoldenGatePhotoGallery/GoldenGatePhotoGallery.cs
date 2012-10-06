@@ -142,7 +142,8 @@ namespace GoldenGate.GoldenGatePhotoGallery
                         <li>Created by: {5}</li>
                         <li>Last Updated On: {6}</li>
                     </ul>
-                  </div>", albumBackLink, upLoadControlHtml, editAlbumControlHtml, selectedAlbum.Name, selectedAlbum.ItemCount,createdBy, modifiedDate)));
+                  </div>
+                  <div class='albumClear'></span>", albumBackLink, upLoadControlHtml, editAlbumControlHtml, selectedAlbum.Name, selectedAlbum.ItemCount, createdBy, modifiedDate)));
                 AddAlbumItemControls(pictureLibrary, selectedAlbum);
             }
         }
