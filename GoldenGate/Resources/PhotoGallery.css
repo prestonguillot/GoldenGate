@@ -170,45 +170,46 @@
 .albumButton
 {
     padding: 5px 5px 5px 5px;
-    border: 1px #cccccc solid;
     float: right;
     font-weight: normal;
     margin: 2px 2px;
+    background: transparent url('../SiteAssets/button-16.png') no-repeat left;
+    color: white;
 }
 
-.albumClear
+.albumClear 
 {
     clear: both;
 }
 
 #albumTitle
 {
-    font-size: 10pt;
-    color: #f04b2a;
-    font-weight: normal;
-    text-transform: uppercase;
+	font-size: 10pt;
+	color: #f04b2a;
+	font-weight: normal;
+	text-transform: uppercase;
 }
 
 .selectable
 {
-    color: #365fac !important;
-    text-decoration: underline;
+	color: #365fac !important;
+	text-decoration: underline;
 }
 
 .selectable:hover
 {
-    color: #f04b2a !important;
-    text-decoration: none;
-    cursor: pointer;
+	color: #f04b2a !important;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 .selected
 {
-    color: #f04b2a !important;
-    text-decoration: underline;
+	color: #f04b2a !important;
+	text-decoration: underline;
 }
 
 .selected:hover
 {
-    cursor: default !important;
+	cursor: default !important;	
 }
