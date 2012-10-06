@@ -124,6 +124,7 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 var modifiedDate = DateTime.Parse(selectedAlbum.Item["ows_Modified"].ToString()).ToString("MM/dd/yyyy");
 
                 var upLoadControlHtml = GenerateUploadControlHtml(pictureLibrary, selectedAlbum);
+                var editAlbumControlHtml = GenerateEditAlbumControlHtml(pictureLibrary, selectedAlbum);
                 var albumBackLink = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path);
                 //HACK: When using HTTPS this returns a url in the form of "http://mysite:443" instead of "https://mysite" which causes mixed content warnings, the following block repairs this, poorly
                 if(albumBackLink.StartsWith("http://") && albumBackLink.Contains(":443/"))
@@ -134,13 +135,14 @@ namespace GoldenGate.GoldenGatePhotoGallery
                 @"<div class='albumDetailHeader'>
                     <a href='{0}' id='albumBack'>&lt; Back to Albums</a>
                     {1}
-                    <h2>{2}</h2>
+                    {2}
+                    <h2>{3}</h2>
                     <ul>
-                        <li>{3} Photos</li>
-                        <li>Created by: {4}</li>
-                        <li>Last Updated On: {5}</li>
+                        <li>{4} Photos</li>
+                        <li>Created by: {5}</li>
+                        <li>Last Updated On: {6}</li>
                     </ul>
-                  </div>", albumBackLink, upLoadControlHtml, selectedAlbum.Name, selectedAlbum.ItemCount,createdBy, modifiedDate)));
+                  </div>", albumBackLink, upLoadControlHtml, editAlbumControlHtml, selectedAlbum.Name, selectedAlbum.ItemCount,createdBy, modifiedDate)));
                 AddAlbumItemControls(pictureLibrary, selectedAlbum);
             }
         }
@@ -186,6 +188,8 @@ namespace GoldenGate.GoldenGatePhotoGallery
             }
             var uploadControlHtml = GenerateUploadControlHtml(albumLibrary);
             headerHtml.Append(uploadControlHtml);
+            var addAlbumControlHtml = GenerateAddAlbumControHtml(albumLibrary);
+            headerHtml.Append(addAlbumControlHtml);
             headerHtml.Append("</div>");
             Controls.Add(new LiteralControl(headerHtml.ToString()));
 
@@ -266,7 +270,47 @@ namespace GoldenGate.GoldenGatePhotoGallery
         private static string GenerateUploadControlHtml(SPList albumLibrary, SPFolder destinationFolder)
         {
             var javaScriptActionLink = GenerateUploadLink(albumLibrary, destinationFolder);
-            return String.Format(@"<span class='albumUpload' onClick=""{0}"">Add Photos</span>", javaScriptActionLink);
+            return String.Format(@"<span class='albumButton' onClick=""{0}"">Add Photos</span>", javaScriptActionLink);
+        }
+
+        private static string GenerateAddAlbumLink(SPList albumLibrary)
+        {
+            var layoutsUrl = albumLibrary.ParentWeb.ServerRelativeUrl + (albumLibrary.ParentWeb.ServerRelativeUrl.EndsWith("/") ? string.Empty : "/") + "_layouts";
+            var contentTypeId = String.Empty;
+            foreach(SPContentType contentType in albumLibrary.ContentTypes)
+            {
+                if(contentType.Name == "Photo Album")
+                {
+                    contentTypeId = contentType.Id.ToString();
+                    break;
+                }
+            }
+            var formLink = String.Format("{0}/listform.aspx?ListId={1}&PageType=8&RootFolder={2}&ContentTypeId={3}", layoutsUrl, albumLibrary.ID, albumLibrary.RootFolder.ServerRelativeUrl, contentTypeId);
+            formLink = SPEncode.ScriptEncode(formLink);
+            var javascriptActionLink = String.Format(@"NewItem2(event, '{0}')", formLink);
+            return javascriptActionLink;
+        }
+
+        private static string GenerateAddAlbumControHtml(SPList albumLibrary)
+        {
+            var javascriptActionLink = GenerateAddAlbumLink(albumLibrary);
+            return String.Format(@"<span class='albumButton' onClick=""{0}"">Add Album</span>", javascriptActionLink);
+        }
+
+
+        private static string GenerateEditAlbumLink(SPList albumLibrary, SPFolder albumFolder)
+        {
+            var layoutsUrl = albumLibrary.ParentWeb.ServerRelativeUrl + (albumLibrary.ParentWeb.ServerRelativeUrl.EndsWith("/") ? string.Empty : "/") + "_layouts";
+            var formLink = String.Format("{0}/listform.aspx?ListId={1}&PageType=6&Id={2}&RootFolder={3}", layoutsUrl, albumLibrary.ID, albumFolder.Item.ID, albumLibrary.RootFolder.ServerRelativeUrl);
+            formLink = SPEncode.ScriptEncode(formLink);
+            var javascriptActionLink = String.Format(@"EditItem2(event, '{0}')", formLink);
+            return javascriptActionLink;
+        }
+
+        private static string GenerateEditAlbumControlHtml(SPList albumLibrary, SPFolder albumFolder)
+        {
+            var javascriptActionLink = GenerateEditAlbumLink(albumLibrary, albumFolder);
+            return String.Format(@"<span class='albumButton' onClick=""{0}"">Edit Album</span>", javascriptActionLink);
         }
 
         private static class QueryResources
