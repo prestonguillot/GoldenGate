@@ -174,7 +174,12 @@
     font-weight: normal;
     margin: 2px 2px;
     background: transparent url('../SiteAssets/button-16.png') no-repeat left;
-    color: white;
+    color: white;    
+}
+
+.albumButton:hover
+{
+	cursor: pointer;
 }
 
 .albumClear 

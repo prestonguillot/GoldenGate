@@ -77,6 +77,7 @@
       <DependentUpon>Golden Gate Media.feature</DependentUpon>
     </Content>
     <Content Include="GoldenGatePhotoGallery\Elements.xml" />
+    <Content Include="Resources\button-16.png" />
     <Content Include="Resources\Folder.png" />
     <Content Include="Resources\PhotoGallery.css" />
     <Content Include="Resources\PhotoGallery.js" />
