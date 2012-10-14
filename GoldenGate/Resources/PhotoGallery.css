@@ -29,7 +29,7 @@
 .albumContainer
 {
     float: left;
-    height: 205px;
+    height: 215px;
     width: 180px;
     margin: 10px 5px 10px 5px;
     border: 1px #CCCCCC;
@@ -112,6 +112,7 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
+    border: 0;
 }
 
 .albumDetailHeader
@@ -162,11 +163,6 @@
     font-size: small;
 }
 
-.s4-wpTopTable
-{
-    background-color: white;
-}
-
 .albumButton
 {
     padding: 5px 5px 5px 5px;
@@ -174,7 +170,7 @@
     font-weight: normal;
     margin: 2px 2px;
     background: transparent url('../SiteAssets/button-16.png') no-repeat left;
-    color: white;    
+    color: white;
 }
 
 .albumButton:hover

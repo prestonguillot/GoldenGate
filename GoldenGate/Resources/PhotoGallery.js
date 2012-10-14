@@ -1,4 +1,7 @@
 ﻿$(function () {
+
+    $(".titleRow").parent().css("background-color", "white").css("padding", "5px 5px 5px 5px");
+
     $(".albumGroup").slice(1).hide();
 
     var defaultAlbumsPerGroupDisplayed = $(".albumHeader").data("albumsVisibleForGroups");
